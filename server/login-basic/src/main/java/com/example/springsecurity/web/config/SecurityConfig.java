@@ -67,7 +67,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     public void configure(WebSecurity web) throws Exception {
         web.ignoring()
-                .requestMatchers(
+                .requestMatchers( // resource 파일들은 일단 적용되게 해주는 메서드
                         PathRequest.toStaticResources().atCommonLocations()
                 );
     }

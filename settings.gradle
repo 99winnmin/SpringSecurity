@@ -37,4 +37,3 @@ rootProject.name = 'SpringSecurity'
         project(projectName).projectDir = subDir
     }
 }
-

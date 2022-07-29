@@ -1,6 +1,5 @@
 package com.example.springsecurity.web.teacher;
 
-import com.example.springsecurity.web.Student.Student;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;

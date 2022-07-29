@@ -9,7 +9,9 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.stereotype.Component;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @Component
 public class StudentManager implements AuthenticationProvider, InitializingBean {
@@ -20,17 +22,28 @@ public class StudentManager implements AuthenticationProvider, InitializingBean 
 
     @Override
     public Authentication authenticate(Authentication authentication) throws AuthenticationException {
+        if (authentication instanceof UsernamePasswordAuthenticationToken){
+            UsernamePasswordAuthenticationToken token = (UsernamePasswordAuthenticationToken) authentication;
+            if(studentDB.containsKey(token.getName())){
+                return getAuthenticationToken(token.getName());
+            }
+            return null;
+        }
         StudentAuthenticationToken token = (StudentAuthenticationToken) authentication;
         if(studentDB.containsKey(token.getCredentials())){
-            Student student = studentDB.get(token.getCredentials());
-            return StudentAuthenticationToken.builder()
-                    .principal(student)
-                    .details(student.getUsername())
-                    .authenticated(true)
-                    .build();
+            return getAuthenticationToken(token.getCredentials());
         }
         // 처리할 수 없는 token을 false로해서 넘기면 handling했다는 것이 때문에 문제가 됨
         return null; // 처리할 수 없는 Authentication은 null로 넘김
+    }
+
+    private StudentAuthenticationToken getAuthenticationToken(String id) {
+        Student student = studentDB.get(id);
+        return StudentAuthenticationToken.builder()
+                .principal(student)
+                .details(student.getUsername())
+                .authenticated(true)
+                .build();
     }
 
     @Override
@@ -39,15 +52,22 @@ public class StudentManager implements AuthenticationProvider, InitializingBean 
         // authentication이 그 토큰이라면?
         // 해당 메서드로 provider로 동작을 하겠다!라고 선언
         // 즉 인증을 위임하겠다!
-        return authentication == StudentAuthenticationToken.class;
+        return authentication == StudentAuthenticationToken.class ||
+                authentication == UsernamePasswordAuthenticationToken.class;
     }
+
+    public List<Student> myStudentList(String teacherId){
+        return studentDB.values().stream().filter(s -> s.getTeacherId().equals(teacherId))
+                .collect(Collectors.toList());
+    }
+
 
     @Override
     public void afterPropertiesSet() throws Exception {
         Set.of(
-                new Student("ryu","류승민", Set.of(new SimpleGrantedAuthority("ROLE_STUDENT"))),
-                new Student("lee","이준규", Set.of(new SimpleGrantedAuthority("ROLE_STUDENT"))),
-                new Student("park","박성규", Set.of(new SimpleGrantedAuthority("ROLE_STUDENT")))
+                new Student("ryu","류승민", Set.of(new SimpleGrantedAuthority("ROLE_STUDENT")), "ryuT"),
+                new Student("lee","이준규", Set.of(new SimpleGrantedAuthority("ROLE_STUDENT")), "ryuT"),
+                new Student("park","박성규", Set.of(new SimpleGrantedAuthority("ROLE_STUDENT")), "ryuT")
         ).forEach(s ->
                 studentDB.put(s.getId(),s));
     }

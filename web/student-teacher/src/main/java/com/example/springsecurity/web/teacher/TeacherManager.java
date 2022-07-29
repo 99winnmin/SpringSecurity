@@ -1,7 +1,5 @@
 package com.example.springsecurity.web.teacher;
 
-import com.example.springsecurity.web.Student.Student;
-import com.example.springsecurity.web.Student.StudentAuthenticationToken;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -20,17 +18,28 @@ public class TeacherManager implements AuthenticationProvider, InitializingBean 
 
     @Override
     public Authentication authenticate(Authentication authentication) throws AuthenticationException {
+        if (authentication instanceof UsernamePasswordAuthenticationToken){
+            UsernamePasswordAuthenticationToken token = (UsernamePasswordAuthenticationToken) authentication;
+            if(teacherDB.containsKey(token.getName())){
+                return getAuthenticationToken(token.getName());
+            }
+            return null;
+        }
         TeacherAuthenticationToken token = (TeacherAuthenticationToken) authentication;
         if(teacherDB.containsKey(token.getCredentials())){
-            Teacher teacher = teacherDB.get(token.getCredentials());
-            return TeacherAuthenticationToken.builder()
-                    .principal(teacher)
-                    .details(teacher.getUsername())
-                    .authenticated(true)
-                    .build();
+            return getAuthenticationToken(token.getCredentials());
         }
         // 처리할 수 없는 token을 false로해서 넘기면 handling했다는 것이 때문에 문제가 됨
         return null; // 처리할 수 없는 Authentication은 null로 넘김
+    }
+
+    private TeacherAuthenticationToken getAuthenticationToken(String id) {
+        Teacher teacher = teacherDB.get(id);
+        return TeacherAuthenticationToken.builder()
+                .principal(teacher)
+                .details(teacher.getUsername())
+                .authenticated(true)
+                .build();
     }
 
     @Override
@@ -39,15 +48,14 @@ public class TeacherManager implements AuthenticationProvider, InitializingBean 
         // authentication이 그 토큰이라면?
         // 해당 메서드로 provider로 동작을 하겠다!라고 선언
         // 즉 인증을 위임하겠다!
-        return authentication == TeacherAuthenticationToken.class;
+        return authentication == TeacherAuthenticationToken.class ||
+                authentication == UsernamePasswordAuthenticationToken.class;
     }
 
     @Override
     public void afterPropertiesSet() throws Exception {
         Set.of(
-                new Teacher("ryuT","류선생", Set.of(new SimpleGrantedAuthority("ROLE_TEACHER"))),
-                new Teacher("leeT","이선생", Set.of(new SimpleGrantedAuthority("ROLE_TEACHER"))),
-                new Teacher("parkT","박선생", Set.of(new SimpleGrantedAuthority("ROLE_TEACHER")))
+                new Teacher("ryuT","류선생", Set.of(new SimpleGrantedAuthority("ROLE_TEACHER")), null)
         ).forEach(t ->
                 teacherDB.put(t.getId(),t));
     }

@@ -1,12 +1,14 @@
 package com.example.springsecurity.web.Student;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 
 import java.util.Collection;
 import java.util.HashSet;
-
-import lombok.*;
 
 @Data
 @NoArgsConstructor

@@ -8,7 +8,7 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 @Configuration
 @ComponentScan("com.example.springsecurity.user")
 @EntityScan(basePackages = {
-        "com.sp.fc.user.domain"
+        "com.example.springsecurity.user.domain"
 })
 @EnableJpaRepositories(basePackages = {
         "com.example.springsecurity.user.repository"

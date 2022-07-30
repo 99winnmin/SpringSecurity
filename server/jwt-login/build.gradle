@@ -5,7 +5,9 @@ dependencies {
 
 
     implementation("com.auth0:java-jwt:3.16.0")  // oauth0
-//    implementation("io.jsonwebtoken:jjwt:0.9.1") // okta
+    implementation("io.jsonwebtoken:jjwt:0.9.1") // okta
+
+    testImplementation("com.h2database:h2")
 
     implementation project(":comp-user-admin")
 

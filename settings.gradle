@@ -1,6 +1,6 @@
 rootProject.name = 'SpringSecurity'
 
-["comp", "web", "server"].each {
+["comp", "test", "web", "server"].each {
 
     def compDir = new File(rootDir, it)
     if(!compDir.exists()){

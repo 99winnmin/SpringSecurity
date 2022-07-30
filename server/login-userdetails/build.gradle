@@ -1,0 +1,8 @@
+apply from: "../web-common.gradle"
+
+dependencies {
+
+    implementation project(":comp-user-admin") // comp에 user 객체와 auth DB 객체를 정의함
+    implementation project(":web-user-admin")
+
+}

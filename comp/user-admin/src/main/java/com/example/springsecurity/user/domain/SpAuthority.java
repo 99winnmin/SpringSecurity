@@ -2,26 +2,28 @@ package com.example.springsecurity.user.domain;
 
 import org.springframework.security.core.GrantedAuthority;
 
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.IdClass;
-import javax.persistence.Table;
+import javax.persistence.*;
 
 @Data
-@NoArgsConstructor
 @AllArgsConstructor
+@NoArgsConstructor
 @Builder
 @Entity
 @Table(name="sp_user_authority")
-@IdClass(SpAuthority.class) // 두 필드가 모두 unique해야함
+@IdClass(SpAuthority.class)
 public class SpAuthority implements GrantedAuthority {
 
     @Id
+    @Column(name="user_id")
     private Long userId;
 
     @Id
     private String authority;
+
 
 }

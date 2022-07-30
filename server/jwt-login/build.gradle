@@ -10,6 +10,7 @@ dependencies {
     testImplementation("com.h2database:h2")
 
     implementation project(":comp-user-admin")
+    testImplementation project(":test-web-util")
 
 }
 

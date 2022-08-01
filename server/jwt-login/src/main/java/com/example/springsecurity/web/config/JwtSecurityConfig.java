@@ -28,7 +28,7 @@ public class JwtSecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        JWTLoginFilter loginFilter = new JWTLoginFilter(authenticationManager());
+        JWTLoginFilter loginFilter = new JWTLoginFilter(authenticationManager(), userService);
         JWTCheckFilter checkFilter = new JWTCheckFilter(authenticationManager(), userService); // 사용자를 직접 가져와야할 상황이 생김
 
         http

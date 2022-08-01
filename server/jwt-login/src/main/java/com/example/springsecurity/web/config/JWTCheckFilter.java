@@ -1,5 +1,6 @@
 package com.example.springsecurity.web.config;
 
+import com.auth0.jwt.exceptions.TokenExpiredException;
 import com.example.springsecurity.user.domain.SpUser;
 import com.example.springsecurity.user.service.SpUserService;
 import org.springframework.http.HttpHeaders;
@@ -42,7 +43,7 @@ public class JWTCheckFilter extends BasicAuthenticationFilter {
             SecurityContextHolder.getContext().setAuthentication(userToken);
             chain.doFilter(request, response);
         }else{
-            throw new AuthenticationException("Token is not valid");
+            throw new TokenExpiredException("Token is not valid");
         }
     }
 }
